@@ -44,7 +44,7 @@ for t in text_in_List:
             f.write(str(string))
 
     else:
-        with open("file.txt", "w") as f:
+        with open("file.txt", "a") as f:
             f.write("\n" + str(string))
 
     print("File", index_counter, "saved to file: file.txt")
