@@ -39,8 +39,13 @@ index_counter = 0
 
 for t in text_in_List:
     string = nltk.pos_tag(word_tokenize(t))
-    with open("file.txt", "w") as f:
-        f.write(str(string) +"\n")
+    if index_counter == 0:
+        with open("file.txt", "w") as f:
+            f.write(str(string))
+
+    else:
+        with open("file.txt", "w") as f:
+            f.write("\n" + str(string))
 
     print("File", index_counter, "saved to file: file.txt")
     index_counter += 1
