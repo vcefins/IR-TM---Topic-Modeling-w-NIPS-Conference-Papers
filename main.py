@@ -8,25 +8,42 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-#
-import nltk
-#
+
 from nltk.corpus import wordnet
 
-"""
+
 nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt')
-"""
+nltk.download('stopwords')
+
+
+lemmatizer = WordNetLemmatizer()
+
+# Converts NLTK's POS tagger output into appropriate input for WordNetLemmatizer
+def get_wordnet_pos(treebank_tag):
+
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return None
+
 
 # parameters for determining the amount of topics and displayed important words
 num_topics = 20
 n_top_words = 20
 
+"""
 # reading csv and creating data corpus
 csv = pd.read_csv("papers.csv", sep=",", header=0)
 text = csv.iloc[:, 6].to_frame().T
 
-
+# Converting Dataframe to List
 text_in_List = []
 for index in range(text.size):
     text_in_List.append(text[index][0])
@@ -39,42 +56,61 @@ index_counter = 0
 
 for t in text_in_List:
     string = nltk.pos_tag(word_tokenize(t))
-    if index_counter == 0:
-        with open("file.txt", "w") as f:
-            f.write(str(string))
-
-    else:
-        with open("file.txt", "a") as f:
-            f.write("\n" + str(string))
+    with open("file.txt", "a+") as f:
+        f.write(str(string))
 
     print("File", index_counter, "saved to file: file.txt")
     index_counter += 1
 
-print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")
-
-for dim in text_pos:
-    print(len(dim))
+print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")"""
 
 
-"""
-# Lemmatizing
-lemmatizer = WordNetLemmatizer()
-# text.iloc[0].apply(lemmatizer.lemmatize())
-text_lemmad = lemmatizer.lemmatize(text, text_pos)
 
-print(type(text_lemmad), text_lemmad, text_lemmad.size)
+############################
+# After POS Tagging and storing the dataset, data from file.txt can be read directly into a list.
+# Since calculating everything in each iteration is very inefficient.
+############################
 
+text_posd = []
+with open("file.txt", "r") as f:
+  for line in f:
+    text_posd.append(line)
 
-# removing stop words
-papers_tokenized = []
+print("Downloading POS tagged dataset complete.\nInitiating Lemmatization.")
 
+# Lemmatizing (while getting rid of stop words)
 stop_words = set(stopwords.words('english'))
+
+# text.iloc[0].apply(lemmatizer.lemmatize())
+
+delete_this_counter = 1
+text_lemmad = []
+
+for doc in text_posd:
+    # POS Tags translated.
+    wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), doc)
+    lemmatized_sentence = []
+    for word, tag in wordnet_tagged:
+        # Filtering STOP WORDS
+        if word not in stop_words:
+            # Lemmatize
+            if tag is None:
+                lemmatized_sentence.append(word)
+            else:
+                lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
+
+    with open("file.txt", "a+") as f:
+        f.write("\n" + str(lemmatized_sentence))
+    print("Document", delete_this_counter, "has been lemmad & stored in file: lemma.txt")
+
+
 # x = 0
 # for paper in text2:
 #     papers_tokenized.append([i.lower() for i in word_tokenize(paper) if i.lower() not in stop_words])
 #     x += 1
 #     print(x)
 
+"""
 
 vectorizer = CountVectorizer(analyzer='word', max_features=10000)
 doc_term_count = vectorizer.fit_transform(text.iloc[0])
@@ -109,19 +145,6 @@ topic_words = get_nmf_topics(nmf_model, n_top_words)
 
 # doc_term_mat_norm = normalize(doc_term_mat, norm='l1', axis=1)
 
-print(topic_words)"""
+print(topic_words)
+"""
 
-
-# Converts NLTK's POS tagger output into appropriate input for WordNetLemmatizer
-def get_wordnet_pos(treebank_tag):
-
-    if treebank_tag.startswith('J'):
-        return wordnet.ADJ
-    elif treebank_tag.startswith('V'):
-        return wordnet.VERB
-    elif treebank_tag.startswith('N'):
-        return wordnet.NOUN
-    elif treebank_tag.startswith('R'):
-        return wordnet.ADV
-    else:
-        return ''
