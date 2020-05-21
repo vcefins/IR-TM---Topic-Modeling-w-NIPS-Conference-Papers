@@ -80,28 +80,30 @@ print("Downloading POS tagged dataset complete.\nInitiating Lemmatization.")
 
 # Lemmatizing (while getting rid of stop words)
 stop_words = set(stopwords.words('english'))
-
-# text.iloc[0].apply(lemmatizer.lemmatize())
-
-delete_this_counter = 1
 text_lemmad = []
+counter = 0
+with open("just_one_paper.txt", "r") as f:
+    with open("lemma.txt", "a+") as lemmafile:
+        for paper in f:
+            wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), ast.literal_eval(paper))
+            lemmatized_sentence = []
+            for word, tag in wordnet_tagged:
+                # Filtering STOP WORDS
+                if word.lower() not in stop_words:
+                    # LEMMATIZE
 
-for doc in text_posd:
-    # POS Tags translated.
-    wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), doc)
-    lemmatized_sentence = []
-    for word, tag in wordnet_tagged:
-        # Filtering STOP WORDS
-        if word not in stop_words:
-            # Lemmatize
-            if tag is None:
-                lemmatized_sentence.append(word)
-            else:
-                lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
+                    if tag is None:
+                        lemmatized_sentence.append(word.lower())
+                    else:
+                        lemmatized_sentence.append(lemmatizer.lemmatize(word.lower(), tag))
 
-    with open("file.txt", "a+") as f:
-        f.write("\n" + str(lemmatized_sentence))
-    print("Document", delete_this_counter, "has been lemmad & stored in file: lemma.txt")
+            lemmafile.write("\n" + str(lemmatized_sentence).translate((str.maketrans('', '', string.punctuation))))
+
+            counter += 1
+            if counter % 100 == 0:
+                print(counter)
+
+print("Lemmatization complete.\nLemmatizated data saved to file: lemma.txt.")
 
 
 # x = 0
