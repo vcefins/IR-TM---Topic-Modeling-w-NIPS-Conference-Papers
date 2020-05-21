@@ -8,14 +8,16 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-
 from nltk.corpus import wordnet
 
+import ast
+import string
 
+"""
 nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt')
 nltk.download('stopwords')
-
+"""
 
 lemmatizer = WordNetLemmatizer()
 
@@ -101,7 +103,7 @@ with open("just_one_paper.txt", "r") as f:
 
             counter += 1
             if counter % 100 == 0:
-                print(counter)
+                print(counter, "papers have completed Lemmatization.\n")
 
 print("Lemmatization complete.\nLemmatizated data saved to file: lemma.txt.")
 
