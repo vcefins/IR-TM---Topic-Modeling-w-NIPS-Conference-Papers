@@ -67,7 +67,6 @@ for t in text_in_List:
 print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")"""
 
 
-
 ############################
 # After POS Tagging and storing the dataset, data from file.txt can be read directly into a list.
 # Since calculating everything in each iteration is very inefficient.
