@@ -16,7 +16,10 @@ import string
 num_topics = 20
 n_top_words = 20
 
-papers_lemmatized = pd.Series(np.genfromtxt('lemma.txt', delimiter=';', dtype=str, unpack=False)[1,:])
+# papers_lemmatized = pd.Series(np.genfromtxt('lemma.txt', delimiter=';', dtype=str, unpack=False)[1,:])
+with open("test_lemma.txt") as text_file:
+    papers_lemmatized = text_file.read().split(';')
+
 
 vectorizer = CountVectorizer(analyzer='word')
 doc_term_count = vectorizer.fit_transform(papers_lemmatized)
@@ -49,6 +52,7 @@ def get_nmf_topics(model, n_top_words):
 
 topic_words = get_nmf_topics(nmf_model, n_top_words)
 
+topic_words.to_csv("results/NMF_topic_words__retry_test_lemma")
 # doc_term_mat_norm = normalize(doc_term_mat, norm='l1', axis=1)
 
 print(topic_words)

@@ -12,6 +12,7 @@ import json
 import ast
 from nltk.corpus import wordnet
 import string
+import nltk
 
 # nltk.download('averaged_perceptron_tagger')
 # nltk.download('punkt')
@@ -36,13 +37,11 @@ def get_wordnet_pos(treebank_tag):
 
 
 # parameters for determining the amount of topics and displayed important words
-num_topics = 20
-n_top_words = 20
 
-"""
+
 # reading csv and creating data corpus
 csv = pd.read_csv("papers.csv", sep=",", header=0)
-text = csv.iloc[:, 6].to_frame().T
+text = csv.iloc[:, 5].to_frame().T
 
 # Converting Dataframe to List
 text_in_List = []
@@ -51,19 +50,21 @@ for index in range(text.size):
 
 print(len(text_in_List), 'papers have found. \nInitiating POS tagging.')
 
+rewrite_abstracts = False
+
 # Part of Speech tagging
 text_pos = []
 index_counter = 0
+if rewrite_abstracts:
+    for t in text_in_List:
+        string = nltk.pos_tag(word_tokenize(t))
+        with open("abstracts.txt", "a+") as f:
+            f.write(str(string) + '\n')
 
-for t in text_in_List:
-    string = nltk.pos_tag(word_tokenize(t))
-    with open("file.txt", "a+") as f:
-        f.write(str(string))
+        print("File", index_counter, "saved to file: abstracts.txt")
+        index_counter += 1
 
-    print("File", index_counter, "saved to file: file.txt")
-    index_counter += 1
-
-print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")"""
+print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")
 
 ############################
 # After POS Tagging and storing the dataset, data from file.txt can be read directly into a list.
@@ -72,8 +73,8 @@ print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")"""
 stop_words = set(stopwords.words('english'))
 text_lemmad = []
 counter = 0
-with open("just_one_paper.txt", "r") as f:
-    with open("lemma.txt", "a+") as lemmafile:
+with open("abstracts.txt", "r") as f:
+    with open("test_lemma.txt", "a+") as lemmafile:
         for paper in f:
             wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), ast.literal_eval(paper))
             lemmatized_sentence = []
@@ -86,7 +87,8 @@ with open("just_one_paper.txt", "r") as f:
                     else:
                         lemmatized_sentence.append(lemmatizer.lemmatize(word.lower(), tag))
 
-            lemmafile.write("\n" + str(lemmatized_sentence).translate((str.maketrans('', '', string.punctuation))))
+            lemmafile.write(
+                "\n" + str(lemmatized_sentence).translate((str.maketrans('', '', string.punctuation))) + ";")
 
             counter += 1
             if counter % 100 == 0:
