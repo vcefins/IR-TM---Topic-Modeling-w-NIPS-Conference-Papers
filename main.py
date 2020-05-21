@@ -36,10 +36,6 @@ def get_wordnet_pos(treebank_tag):
         return None
 
 
-# parameters for determining the amount of topics and displayed important words
-num_topics = 20
-n_top_words = 20
-
 """
 # reading csv and creating data corpus
 csv = pd.read_csv("papers.csv", sep=",", header=0)
@@ -72,18 +68,13 @@ print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")"""
 # Since calculating everything in each iteration is very inefficient.
 ############################
 
-text_posd = []
-with open("file.txt", "r") as f:
-  for line in f:
-    text_posd.append(line)
-
-print("Downloading POS tagged dataset complete.\nInitiating Lemmatization.")
+# print("Downloading POS tagged dataset complete.\nInitiating Lemmatization.")
 
 # Lemmatizing (while getting rid of stop words)
 stop_words = set(stopwords.words('english'))
-text_lemmad = []
+
 counter = 0
-with open("just_one_paper.txt", "r") as f:
+with open("file.txt", "r") as f:
     with open("lemma.txt", "a+") as lemmafile:
         for paper in f:
             wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), ast.literal_eval(paper))
@@ -104,7 +95,7 @@ with open("just_one_paper.txt", "r") as f:
             if counter % 100 == 0:
                 print(counter, "papers have completed Lemmatization.\n")
 
-print("Lemmatization complete.\nLemmatizated data saved to file: lemma.txt.")
+print("\n\nLemmatization complete.\nLemmatizated data saved to file: lemma.txt.")
 
 
 # x = 0
