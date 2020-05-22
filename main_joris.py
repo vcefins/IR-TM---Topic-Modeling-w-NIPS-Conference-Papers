@@ -41,7 +41,7 @@ def get_wordnet_pos(treebank_tag):
 
 # reading csv and creating data corpus
 csv = pd.read_csv("papers.csv", sep=",", header=0)
-text = csv.iloc[:, 5].to_frame().T
+text = csv.iloc[:, 6].to_frame().T
 
 # Converting Dataframe to List
 text_in_List = []
@@ -50,19 +50,21 @@ for index in range(text.size):
 
 print(len(text_in_List), 'papers have found. \nInitiating POS tagging.')
 
-rewrite_abstracts = False
+rewrite_pos = False
 
 # Part of Speech tagging
 text_pos = []
 index_counter = 0
-if rewrite_abstracts:
-    for t in text_in_List:
-        string = nltk.pos_tag(word_tokenize(t))
-        with open("abstracts.txt", "a+") as f:
+if rewrite_pos:
+    with open("file2.txt", "a+") as f:
+        for t in text_in_List:
+            string = nltk.pos_tag(word_tokenize(t))
+
             f.write(str(string) + '\n')
 
-        print("File", index_counter, "saved to file: abstracts.txt")
-        index_counter += 1
+            index_counter += 1
+            if index_counter % 100 == 0:
+                print("File", index_counter, "saved to file: abstracts.txt")
 
 print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")
 
@@ -73,8 +75,8 @@ print("\n\n\nPOS tagging completed.\nSaved POS tagged corpus to file.")
 stop_words = set(stopwords.words('english'))
 text_lemmad = []
 counter = 0
-with open("abstracts.txt", "r") as f:
-    with open("test_lemma.txt", "a+") as lemmafile:
+with open("file2.txt", "r") as f:
+    with open("file2_lemma.txt", "a+") as lemmafile:
         for paper in f:
             wordnet_tagged = map(lambda x: (x[0], get_wordnet_pos(x[1])), ast.literal_eval(paper))
             lemmatized_sentence = []
