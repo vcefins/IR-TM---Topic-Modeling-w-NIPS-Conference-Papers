@@ -17,11 +17,13 @@ num_topics = 20
 n_top_words = 20
 
 # papers_lemmatized = pd.Series(np.genfromtxt('lemma.txt', delimiter=';', dtype=str, unpack=False)[1,:])
-with open("test_lemma.txt") as text_file:
+with open("file2_lemma.txt") as text_file:
     papers_lemmatized = text_file.read().split(';')
 
+papers_lemmatized_df = pd.DataFrame(papers_lemmatized, dtype=str)
 
 vectorizer = CountVectorizer(analyzer='word')
+
 doc_term_count = vectorizer.fit_transform(papers_lemmatized)
 
 
@@ -31,8 +33,8 @@ doc_term_tfidf = transformer.fit_transform(doc_term_count)
 
 doc_term_tfidf_norm = normalize(doc_term_tfidf, norm='l1', axis=1)
 
-nmf_model = NMF(n_components=num_topics, max_iter=400)
-nmf_model.fit(doc_term_count)
+nmf_model = NMF(n_components=num_topics, max_iter=200)
+document_topic_matrix = nmf_model.fit_transform(doc_term_tfidf_norm)
 
 
 # function obtained from https://medium.com/ml2vec/topic-modeling-is-an-unsupervised-learning-approach-to-clustering-documents-to-discover-topics-fdfbf30e27df
@@ -52,7 +54,7 @@ def get_nmf_topics(model, n_top_words):
 
 topic_words = get_nmf_topics(nmf_model, n_top_words)
 
-topic_words.to_csv("results/NMF_topic_words__retry_test_lemma")
+topic_words.to_csv("results/NMF_topic_words__test")
 # doc_term_mat_norm = normalize(doc_term_mat, norm='l1', axis=1)
 
 print(topic_words)

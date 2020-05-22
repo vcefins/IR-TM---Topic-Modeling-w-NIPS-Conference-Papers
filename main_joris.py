@@ -90,7 +90,7 @@ with open("file2.txt", "r") as f:
                         lemmatized_sentence.append(lemmatizer.lemmatize(word.lower(), tag))
 
             lemmafile.write(
-                "\n" + str(lemmatized_sentence).translate((str.maketrans('', '', string.punctuation))) + ";")
+                "" + str(lemmatized_sentence).translate((str.maketrans('', '', string.punctuation))) + ";")
 
             counter += 1
             if counter % 100 == 0:
